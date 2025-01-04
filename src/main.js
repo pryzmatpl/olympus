@@ -12,7 +12,12 @@ const routes = [
   { 
     path: '/story', 
     component: () => import('./views/StoryReader.vue') 
+  },
+  {
+    path: '/character',
+    component: () => import('./views/CharacterOverview.vue')
   }
+  
 ];
 
 const router = createRouter({
