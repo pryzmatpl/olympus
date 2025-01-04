@@ -14,22 +14,29 @@ export async function generateAvatar(westernZodiac, chineseZodiac) {
   try {
     // Generate a detailed prompt based on zodiac signs
     const prompt = `A mystical avatar combining elements of ${westernZodiac} and ${chineseZodiac} zodiacs. 
-                   Artistic style: ethereal digital art with cosmic elements and spiritual symbols. 
-                   The composition should blend Western zodiac ${westernZodiac} with Chinese zodiac ${chineseZodiac} characteristics.`;
-
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
-      n: 1,
-      size: "1024x1024",
-      quality: "standard",
-      response_format: "url"
-    });
-
-    return {
-      url: response.data[0].url,
-      model3dUrl: `${MODEL_API}/models/${westernZodiac.toLowerCase()}-${chineseZodiac.toLowerCase()}.glb`
-    };
+    Artistic style: ethereal digital art with cosmic elements and spiritual symbols. 
+    The composition should blend Western zodiac ${westernZodiac} with Chinese zodiac ${chineseZodiac} characteristics.`;
+    
+    if (process.env.GENERATE=="1") {
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: prompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+        response_format: "url"
+      });
+      
+      return {
+        url: response.data[0].url,
+        model3dUrl: `${MODEL_API}/models/${westernZodiac.toLowerCase()}-${chineseZodiac.toLowerCase()}.glb`
+      };
+    } else {
+      return {
+        url: "http://pryzmat.realdeeptech.com/img/prism.3272fc56.gif",
+        model3dUrl: `${MODEL_API}/models/${westernZodiac.toLowerCase()}-${chineseZodiac.toLowerCase()}.glb`
+      }; 
+    }
   } catch (error) {
     console.error('Error generating avatar:', error);
     throw new Error('Failed to generate avatar');
@@ -49,44 +56,56 @@ export async function generateChapter(userProfile, chapterNumber) {
     - Style: Epic adventure with personal growth elements
     
     Format the response as a JSON object with title, content, and mythologicalEntities arrays.`;
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { 
-          role: "system", 
-          content: "You are a skilled mythological storyteller who creates engaging narratives blending Western and Chinese zodiac elements."
-        },
-        { 
-          role: "user", 
-          content: chapterPrompt 
-        }
-      ],
-      response_format: { type: "json_object" }
-    });
-
-    // Parse the response
-    const storyData = JSON.parse(completion.choices[0].message.content);
-
-    // Generate an image for the chapter
-    const imagePrompt = `A scene from a mythological story featuring ${userProfile.westernZodiac} zodiac elements: ${storyData.title}`;
-    const imageResponse = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: imagePrompt,
-      n: 1,
-      size: "1024x1024",
-      quality: "standard",
-      response_format: "url"
-    });
-
-    return {
-      id: `chapter-${chapterNumber}`,
-      title: storyData.title,
-      content: storyData.content,
-      imageUrl: imageResponse.data[0].url,
-      createdAt: new Date(),
-      mythologicalEntities: storyData.mythologicalEntities
-    };
+    
+    
+    if (process.env.GENERATE=="1") {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are a skilled mythological storyteller who creates engaging narratives blending Western and Chinese zodiac elements."
+          },
+          { 
+            role: "user", 
+            content: chapterPrompt 
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+      
+      // Parse the response
+      const storyData = JSON.parse(completion.choices[0].message.content);
+      
+      // Generate an image for the chapter
+      const imagePrompt = `A scene from a mythological story featuring ${userProfile.westernZodiac} zodiac elements: ${storyData.title}`;
+      const imageResponse = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: imagePrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+        response_format: "url"
+      });
+      
+      return {
+        id: `chapter-${chapterNumber}`,
+        title: storyData.title,
+        content: storyData.content,
+        imageUrl: imageResponse.data[0].url,
+        createdAt: new Date(),
+        mythologicalEntities: storyData.mythologicalEntities
+      };
+    }else {
+      return {
+        id: `chapter-${chapterNumber}`,
+        title: "New quest begins",
+        content: "Our heroes begin!",
+        imageUrl: "http://pryzmat.realdeeptech.com/img/microlens.1e42bcd9.jpg",
+        createdAt: new Date(),
+        mythologicalEntities: ['Zeus']
+      };
+    }
   } catch (error) {
     console.error('Error generating chapter:', error);
     throw new Error('Failed to generate chapter');
