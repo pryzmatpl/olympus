@@ -6,7 +6,8 @@ const MODEL_API = 'https://api.3d-model-generator.com';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY // Make sure to set this in your environment
+  apiKey: process.env.OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true // @todo: This will need to be put in the backend!
 });
 
 export async function generateAvatar(westernZodiac, chineseZodiac) {

@@ -58,7 +58,7 @@ export default {
 
     const handleSubmit = async () => {
       const birthdayDate = new Date(birthday.value);
-      const name = inputName.value;
+      const heroName = inputName.value;
       const westernZodiac = getWesternZodiac(birthdayDate);
       const chineseZodiac = getChineseZodiac(birthdayDate);
       
@@ -66,7 +66,7 @@ export default {
       
       store.setProfile({
         birthday: birthdayDate,
-        name: name,
+        name: heroName,
         westernZodiac,
         chineseZodiac,
         avatar,
@@ -78,7 +78,7 @@ export default {
 
     return {
       birthday,
-      name,
+      inputName,
       handleSubmit
     };
   }
