@@ -16,6 +16,15 @@
             v-model="birthday"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
+          <label class="block text-sm font-medium text-gray-700">
+            Choose your mythical name
+          </label>
+          <input
+            type="text"
+            required
+            v-model="inputName"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
         </div>
         <button
           type="submit"
@@ -43,11 +52,13 @@ export default {
   },
   setup() {
     const birthday = ref('');
+    const inputName = ref('');
     const router = useRouter();
     const store = useUserStore();
 
     const handleSubmit = async () => {
       const birthdayDate = new Date(birthday.value);
+      const name = inputName.value;
       const westernZodiac = getWesternZodiac(birthdayDate);
       const chineseZodiac = getChineseZodiac(birthdayDate);
       
@@ -55,6 +66,7 @@ export default {
       
       store.setProfile({
         birthday: birthdayDate,
+        name: name,
         westernZodiac,
         chineseZodiac,
         avatar,
@@ -66,6 +78,7 @@ export default {
 
     return {
       birthday,
+      name,
       handleSubmit
     };
   }
